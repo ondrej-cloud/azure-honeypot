@@ -39,11 +39,26 @@ Admin IP      $ADMIN_IP  (the only address allowed to reach the real SSH port)
 
 EOF
 
+echo "Registering resource providers (first run only)..."
+for provider in Microsoft.Compute Microsoft.Network Microsoft.Storage Microsoft.ManagedIdentity; do
+  az provider register --namespace "$provider" --wait --output none
+done
+
 echo "Checking that $VM_SIZE is offered in $LOCATION..."
-offered=$(az vm list-skus --location "$LOCATION" --size "$VM_SIZE" --resource-type virtualMachines \
-  --query "[?name=='$VM_SIZE'].name" -o tsv)
-[[ -n $offered ]] || die "$VM_SIZE is not available to this subscription in $LOCATION.
-Try another region, e.g. LOCATION=swedencentral scripts/deploy.sh (Azure for Students limits regions)."
+# Raw REST is minutes faster than `az vm list-skus`. Restrictions say why a size is unusable
+# (student subscriptions often get NotAvailableForSubscription in busy regions).
+sku=$(az rest --method get \
+  --url "https://management.azure.com/subscriptions/$(az account show --query id -o tsv)/providers/Microsoft.Compute/skus?api-version=2021-07-01&\$filter=location eq '$LOCATION'" \
+  --query "value[?resourceType=='virtualMachines' && name=='$VM_SIZE'] | [0]" -o json)
+restrictions=$(python3 -c '
+import json, sys
+sku = json.loads(sys.stdin.read().strip() or "null")
+print(",".join(sorted({r["reasonCode"] for r in sku.get("restrictions", [])})) if sku else "not offered there")
+' <<<"$sku")
+[[ -z $restrictions ]] || die "$VM_SIZE is not available to this subscription in $LOCATION ($restrictions).
+Student subscriptions only allow some regions and sizes. Try another, e.g.
+  LOCATION=polandcentral scripts/deploy.sh
+  VM_SIZE=Standard_B2ats_v2 scripts/deploy.sh"
 
 az group create --name "$RG" --location "$LOCATION" --output none
 admin_id=$(az ad signed-in-user show --query id -o tsv 2>/dev/null || true)
