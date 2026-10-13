@@ -1,0 +1,97 @@
+name: Update stats & deploy dashboard
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # every 6 hours
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["docs/**", "pipeline/**", ".github/workflows/pipeline.yml"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pipeline
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Pull logs from Azure and rebuild stats
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # commit data/, charts and the README
+      id-token: write   # OIDC token, exchanged for the Azure reader identity
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - id: week
+        run: echo "week=$(date -u +%G-%V)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: .cache
+          key: geoip-${{ steps.week.outputs.week }}
+          restore-keys: geoip-
+
+      - name: Azure login (OIDC, no stored secret)
+        if: vars.AZURE_CLIENT_ID != ''
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          allow-no-subscriptions: true   # the identity only has a data-plane role on one container
+
+      - name: Fetch new logs
+        if: vars.AZURE_CLIENT_ID != ''
+        run: python -m pipeline fetch --account "${{ vars.STORAGE_ACCOUNT }}"
+
+      - name: Build stats, charts and README
+        run: python -m pipeline build
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data docs/data/stats.json docs/charts README.md
+          if git diff --cached --quiet; then
+            echo "Nothing new."
+            exit 0
+          fi
+          git commit -m "data: update honeypot stats"
+          git push
+
+  deploy:
+    name: Deploy dashboard to GitHub Pages
+    needs: update
+    # Runs after a successful update, and on its own for pushes (update is skipped then).
+    if: always() && (needs.update.result == 'success' || needs.update.result == 'skipped')
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main   # pick up the data commit made by the update job
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/cache/restore@v4
+        with:
+          path: .cache
+          key: geoip-none
+          restore-keys: geoip-
+      - name: Build the ?demo preview
+        run: python -m pipeline demo
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs
+      - id: deployment
+        uses: actions/deploy-pages@v4

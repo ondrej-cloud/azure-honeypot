@@ -1,0 +1,6 @@
+# Generated data: keep diffs quiet and language stats honest.
+data/** linguist-generated=true -diff
+docs/data/** linguist-generated=true -diff
+docs/charts/** linguist-generated=true
+docs/assets/world-110m.json linguist-vendored=true
+tests/fixtures/** linguist-vendored=true

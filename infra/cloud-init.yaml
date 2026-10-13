@@ -1,0 +1,126 @@
+#cloud-config
+# First-boot provisioning for the honeypot VM (Ubuntu 24.04).
+# main.bicep fills in the __PLACEHOLDERS__ and embeds the sensor/ files as base64.
+
+package_update: true
+package_upgrade: true
+packages:
+  - docker.io
+  - docker-compose-v2
+
+write_files:
+  # Port 22 belongs to Cowrie. The real sshd moves to the admin port, which the
+  # NSG only opens to the operator's IP, and accepts keys only.
+  - path: /etc/ssh/sshd_config.d/10-honeypot.conf
+    permissions: "0644"
+    content: |
+      Port __ADMIN_SSH_PORT__
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PermitRootLogin no
+
+  - path: /opt/honeypot/docker-compose.yml
+    encoding: b64
+    permissions: "0644"
+    content: __COMPOSE_B64__
+
+  - path: /opt/honeypot/.env
+    permissions: "0644"
+    content: |
+      SENSOR_NAME=__SENSOR_NAME__
+
+  - path: /opt/honeypot/shipper.py
+    encoding: b64
+    permissions: "0755"
+    content: __SHIPPER_B64__
+
+  - path: /etc/honeypot/shipper.env
+    permissions: "0644"
+    content: |
+      STORAGE_ACCOUNT=__STORAGE_ACCOUNT__
+      STORAGE_CONTAINER=logs
+
+  # Cowrie fetches whatever URL an attacker passes to its fake wget/curl. Make
+  # sure that can never reach Azure's host-only endpoints: IMDS would hand out
+  # the VM's managed-identity token, WireServer is the platform agent channel.
+  - path: /opt/honeypot/egress-firewall.sh
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+      set -eu
+      iptables -N HONEYPOT-EGRESS 2>/dev/null || iptables -F HONEYPOT-EGRESS
+      iptables -A HONEYPOT-EGRESS -d 168.63.129.16 -p udp --dport 53 -j RETURN  # Azure DNS stays usable
+      iptables -A HONEYPOT-EGRESS -d 168.63.129.16 -p tcp --dport 53 -j RETURN
+      iptables -A HONEYPOT-EGRESS -d 168.63.129.16 -j DROP
+      iptables -A HONEYPOT-EGRESS -d 169.254.169.254 -j DROP
+      iptables -A HONEYPOT-EGRESS -p tcp --dport 25 -j DROP                     # no spam relaying
+      iptables -C DOCKER-USER -j HONEYPOT-EGRESS 2>/dev/null || iptables -I DOCKER-USER 1 -j HONEYPOT-EGRESS
+
+  - path: /etc/systemd/system/honeypot-egress.service
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Block honeypot containers from Azure host-only endpoints
+      After=docker.service
+      Requires=docker.service
+      PartOf=docker.service
+
+      [Service]
+      Type=oneshot
+      RemainAfterExit=yes
+      ExecStart=/opt/honeypot/egress-firewall.sh
+
+      [Install]
+      WantedBy=multi-user.target
+
+  - path: /etc/systemd/system/honeypot-shipper.service
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Ship Cowrie logs to Azure Blob Storage
+      After=network-online.target docker.service
+      Wants=network-online.target
+
+      [Service]
+      Type=oneshot
+      EnvironmentFile=/etc/honeypot/shipper.env
+      ExecStart=/usr/bin/python3 /opt/honeypot/shipper.py
+      StateDirectory=honeypot-shipper
+      ProtectSystem=strict
+      ProtectHome=yes
+      PrivateTmp=yes
+      NoNewPrivileges=yes
+      ReadWritePaths=/var/lib/docker/volumes/cowrie-var/_data
+
+  - path: /etc/systemd/system/honeypot-shipper.timer
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Ship Cowrie logs every hour
+
+      [Timer]
+      OnBootSec=10min
+      OnCalendar=*-*-* *:05:00
+      RandomizedDelaySec=120
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+
+runcmd:
+  # 1 GiB of RAM is tight while apt and Docker are busy; add a small swap file.
+  - [sh, -c, "test -f /swapfile || { fallocate -l 1G /swapfile && chmod 600 /swapfile && mkswap /swapfile && echo '/swapfile none swap sw 0 0' >> /etc/fstab; }"]
+  - swapon -a
+  # Ubuntu 24.04 starts sshd through ssh.socket on port 22. Switch to the plain
+  # service so it honours the Port from sshd_config and frees 22 for Cowrie.
+  - systemctl disable --now ssh.socket
+  - rm -f /etc/systemd/system/ssh.service.d/00-socket.conf /etc/systemd/system/ssh.socket.d/addresses.conf
+  - systemctl daemon-reload
+  - systemctl enable ssh.service
+  - systemctl restart ssh.service
+  - systemctl enable --now docker.service
+  - systemctl enable --now honeypot-egress.service
+  - docker compose -f /opt/honeypot/docker-compose.yml up -d
+  - systemctl enable --now honeypot-shipper.timer
+
+final_message: "Honeypot provisioned after $UPTIME seconds"

@@ -1,0 +1,35 @@
+# Cowrie SSH/Telnet honeypot, hardened so a compromised emulator stays boxed in.
+# Deployed by cloud-init to /opt/honeypot/docker-compose.yml.
+name: honeypot
+
+services:
+  cowrie:
+    image: cowrie/cowrie:3.1
+    restart: unless-stopped
+    ports:
+      - "22:2222"   # SSH  -> fake shell (real sshd is moved to port 22222)
+      - "23:2223"   # Telnet
+    environment:
+      COWRIE_HONEYPOT_HOSTNAME: srv-db01
+      COWRIE_HONEYPOT_SENSOR_NAME: ${SENSOR_NAME:-azure-honeypot}
+      COWRIE_HONEYPOT_LOGTYPE: rotating          # daily cowrie.json.YYYY-MM-DD files (default never rotates)
+      COWRIE_SSH_VERSION: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.5
+      COWRIE_SSH_FORWARDING: "false"             # never let attackers use us as a proxy / spam relay
+      COWRIE_TELNET_ENABLED: "yes"
+    volumes:
+      - cowrie-var:/cowrie/cowrie-git/var        # logs, tty recordings, captured downloads
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    pids_limit: 256
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+volumes:
+  cowrie-var:
+    name: cowrie-var   # fixed name -> /var/lib/docker/volumes/cowrie-var/_data on the host
