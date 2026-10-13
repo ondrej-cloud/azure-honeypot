@@ -18,6 +18,14 @@ die() { echo "error: $*" >&2; exit 1; }
 
 command -v az >/dev/null || die "Azure CLI not found. Install it with: brew install azure-cli"
 az account show >/dev/null 2>&1 || die "not logged in to Azure. Run: az login"
+# "Azure for Students Starter" and similar offers block VMs, networks and storage outright.
+if ! err=$(az provider show --namespace Microsoft.Compute --query registrationState -o tsv 2>&1); then
+  grep -q DisallowedProvider <<<"$err" && die "subscription '$(az account show --query name -o tsv)' does not allow virtual machines.
+Azure for Students Starter only permits App Service, SQL and a few other services. Activate the full
+Azure for Students offer (\$100 credit) at https://azure.microsoft.com/free/students, then select it:
+  az account set --subscription \"Azure for Students\""
+  die "$err"
+fi
 [[ -f $SSH_KEY ]] || die "no SSH public key at $SSH_KEY. Create one with: ssh-keygen -t ed25519"
 [[ -n $GITHUB_REPO ]] || die "push this repo to GitHub first, or set GITHUB_REPO=owner/name"
 ADMIN_IP=${ADMIN_IP:-$(curl -fsS https://api.ipify.org)} || die "could not detect your public IP, set ADMIN_IP"
