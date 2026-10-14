@@ -72,6 +72,10 @@ published because they are the attack sources, the same data shared on AbuseIPDB
 compromised machines or rented servers, so the dashboard links to a reputation lookup and asks visitors to
 report abuse, not retaliate.
 
+Your own addresses are left out: `make deploy` and `make allow-ip` remember every IP you have administered from
+(in the gitignored `.admin-ips`) and store them in the `IGNORE_IPS` Actions secret, and the pipeline drops all
+events from them before anything is summarized.
+
 ## Deploy your own
 
 **You need:** an Azure subscription ([Azure for Students](https://azure.microsoft.com/free/students) works and
@@ -110,7 +114,7 @@ First boot takes about 5 minutes. Bots usually find the new IP within the hour.
 ```bash
 make ssh             # shell on the VM (real sshd on port 22222)
 make logs            # watch attacks arrive live
-make allow-ip        # your home IP changed? re-open the admin port to it
+make allow-ip        # new network? open the admin port to it and hide it from the stats
 make update-sensor   # push changes in sensor/ (cloud-init only runs at first boot)
 make destroy         # delete every Azure resource
 ```

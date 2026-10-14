@@ -46,6 +46,8 @@ jobs:
 
       - name: Fetch new logs
         if: vars.AZURE_CLIENT_ID != ''
+        env:
+          IGNORE_IPS: ${{ secrets.IGNORE_IPS }}   # your own IPs; a secret so they stay out of public logs
         run: python -m pipeline fetch --account "${{ vars.STORAGE_ACCOUNT }}"
 
       - name: Build stats, charts and README

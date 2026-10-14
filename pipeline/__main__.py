@@ -11,19 +11,28 @@ import argparse
 import gzip
 import io
 import json
+import os
 import re
 import sys
 from pathlib import Path
 from typing import Iterable
 
 from . import demo, fetch, geo, render, stats
-from .cowrie import summarize
+from .cowrie import parse_networks, summarize
 
 ROOT = Path(__file__).resolve().parent.parent
 DAILY = ROOT / "data" / "daily"
 STATE = ROOT / "data" / "state.json"
 CACHE = ROOT / ".cache"
 DATE_IN_NAME = re.compile(r"(\d{4}-\d{2}-\d{2})")
+
+
+def _ignored_networks() -> tuple:
+    """The operator's own addresses (IGNORE_IPS), kept out of everything published."""
+    try:
+        return parse_networks(os.environ.get("IGNORE_IPS", ""))
+    except ValueError as e:
+        sys.exit(str(e))
 
 
 def _lines(path: Path) -> Iterable[bytes]:
@@ -42,14 +51,16 @@ def _write_day(daily_dir: Path, summary: dict) -> None:
 
 
 def cmd_ingest(args: argparse.Namespace) -> None:
+    ignore = _ignored_networks()
     for path in map(Path, args.files):
         m = DATE_IN_NAME.search(path.name)
         if not (m or args.date):
             sys.exit(f"{path}: no YYYY-MM-DD in the file name, pass --date")
-        _write_day(args.data, summarize(_lines(path), args.date or m.group(1)))
+        _write_day(args.data, summarize(_lines(path), args.date or m.group(1), ignore))
 
 
 def cmd_fetch(args: argparse.Namespace) -> None:
+    ignore = _ignored_networks()
     state = json.loads(STATE.read_text()) if STATE.exists() else {}
     container = fetch.BlobContainer(args.account, args.container, fetch.access_token())
     for blob in container.list("cowrie/"):
@@ -58,7 +69,7 @@ def cmd_fetch(args: argparse.Namespace) -> None:
             continue
         raw = io.BytesIO(container.download(blob["name"]))
         with gzip.GzipFile(fileobj=raw) as lines:
-            _write_day(args.data, summarize(lines, m.group(1)))
+            _write_day(args.data, summarize(lines, m.group(1), ignore))
         state[blob["name"]] = blob["etag"]
         STATE.write_text(json.dumps(state, indent=1, sort_keys=True) + "\n")
 

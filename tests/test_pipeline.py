@@ -10,7 +10,7 @@ from unittest import mock
 
 from pipeline import render, stats
 from pipeline.attack import classify, technique_url
-from pipeline.cowrie import summarize
+from pipeline.cowrie import parse_networks, summarize
 from pipeline.geo import GeoDB
 
 FIXTURE = Path(__file__).parent / "fixtures" / "cowrie-3.1.json"   # recorded from a real Cowrie 3.1.2
@@ -77,6 +77,19 @@ class SummarizeTest(unittest.TestCase):
         self.assertEqual(day["hourly"][23], 1)
         self.assertEqual(day["totals"]["malformed_lines"], 1)
         self.assertEqual(day["totals"]["interactive_sessions"], 1)
+
+    def test_operator_ips_are_dropped(self):
+        lines = [event("cowrie.session.connect"),
+                 event("cowrie.login.failed", username="root", password="root"),
+                 event("cowrie.session.connect", session="s2", ip="198.51.100.9"),
+                 event("cowrie.session.connect", session="s3", ip="2001:db8::5")]
+        day = summarize(lines, "2026-10-12", parse_networks(" 203.0.113.7, 198.51.100.0/24\n2001:db8::/32 "))
+        self.assertEqual((day["totals"]["sessions"], day["unique_ips"], day["ips"]), (0, 0, {}))
+        self.assertEqual(day["usernames"], [])
+        self.assertEqual(summarize(lines, "2026-10-12", parse_networks(""))["unique_ips"], 3)
+        with self.assertRaisesRegex(ValueError, "not an IP") as caught:
+            parse_networks("203.0.113.7,secret-host")
+        self.assertNotIn("secret-host", str(caught.exception))
 
     def test_attacker_strings_are_bounded(self):
         day = summarize([event("cowrie.command.input", input="A" * 10_000 + "\x00")], "2026-10-12")

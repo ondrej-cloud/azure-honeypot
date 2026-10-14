@@ -6,9 +6,11 @@ tail (passwords, commands, ...), but never the raw event stream.
 """
 from __future__ import annotations
 
+import ipaddress
 import json
+import re
 from collections import Counter
-from typing import Iterable
+from typing import Iterable, Sequence, Union
 
 from .attack import classify
 
@@ -27,8 +29,27 @@ def _top(counter: Counter, n: int = TOP_N) -> list:
     return [[key, count] for key, count in counter.most_common(n)]
 
 
-def summarize(lines: Iterable[str | bytes], day: str) -> dict:
-    """Summarize Cowrie JSON lines (one event per line) for a UTC day."""
+Network = Union[ipaddress.IPv4Network, ipaddress.IPv6Network]
+
+
+def parse_networks(text: str) -> tuple[Network, ...]:
+    """Parse the IGNORE_IPS list: IPs or CIDRs separated by commas or whitespace."""
+    networks = []
+    for item in re.split(r"[\s,]+", text.strip()):
+        if item:
+            try:
+                networks.append(ipaddress.ip_network(item, strict=False))
+            except ValueError:
+                # Don't echo the entry: it is part of a secret.
+                raise ValueError("IGNORE_IPS has an entry that is not an IP address or CIDR") from None
+    return tuple(networks)
+
+
+def summarize(lines: Iterable[str | bytes], day: str, ignore: Sequence[Network] = ()) -> dict:
+    """Summarize Cowrie JSON lines (one event per line) for a UTC day.
+
+    Events from `ignore` (the operator's own addresses) are dropped entirely.
+    """
     totals: Counter = Counter()
     hourly = [0] * 24
     protocols: Counter = Counter()
@@ -42,6 +63,7 @@ def summarize(lines: Iterable[str | bytes], day: str) -> dict:
     hassh: Counter = Counter()
     downloads: dict[str, dict] = {}
     sessions: dict[str, dict] = {}   # session id -> {"commands": [...], "logins": n}
+    ignored: dict[str, bool] = {}
 
     for raw in lines:
         try:
@@ -54,6 +76,14 @@ def summarize(lines: Iterable[str | bytes], day: str) -> dict:
         ip, sid = event.get("src_ip"), event.get("session")
         if not isinstance(ip, str) or not sid:
             continue
+        if ignore:
+            if ip not in ignored:
+                try:
+                    ignored[ip] = any(ipaddress.ip_address(ip) in net for net in ignore)
+                except ValueError:
+                    ignored[ip] = False
+            if ignored[ip]:
+                continue
         eid = event.get("eventid", "")
         ts = str(event.get("timestamp", ""))
         counters = ips.setdefault(ip, [0, 0, 0, 0])

@@ -94,6 +94,9 @@ else
   echo "  STORAGE_ACCOUNT=$(out storageAccount)"
 fi
 
+# Re-applies the recent admin IPs to the NSG and excludes them from the published stats.
+RG=$RG PREFIX=$PREFIX ADMIN_IP=$ADMIN_IP GITHUB_REPO=$GITHUB_REPO scripts/allow-my-ip.sh
+
 cat <<EOF
 
 Done. The honeypot is live at $(out publicIp) (ports 22 and 23).
