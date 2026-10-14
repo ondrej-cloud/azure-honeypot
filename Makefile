@@ -4,7 +4,7 @@ PREFIX ?= hpot
 PORT   ?= 22222
 VM_IP   = $$(az network public-ip show -g $(RG) -n $(PREFIX)-pip --query ipAddress -o tsv)
 
-.PHONY: help test demo serve build deploy allow-ip ssh logs update-sensor destroy
+.PHONY: help test demo serve build report deploy allow-ip ssh logs update-sensor destroy
 
 help: ## Show this help
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  \033[1m%-14s\033[0m %s\n", $$1, $$2}'
@@ -20,6 +20,9 @@ serve: ## Serve the dashboard at http://localhost:8000 (demo: /?demo)
 
 build: ## Rebuild stats.json, charts and README from data/daily
 	$(PY) -m pipeline build
+
+report: ## Write the weekly reports into reports/
+	$(PY) -m pipeline report
 
 deploy: ## Create or update everything in Azure
 	scripts/deploy.sh

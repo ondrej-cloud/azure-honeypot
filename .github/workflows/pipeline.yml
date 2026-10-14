@@ -50,14 +50,25 @@ jobs:
           IGNORE_IPS: ${{ secrets.IGNORE_IPS }}   # your own IPs; a secret so they stay out of public logs
         run: python -m pipeline fetch --account "${{ vars.STORAGE_ACCOUNT }}"
 
+      - name: Look up captured malware (optional API keys)
+        env:
+          VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
+          MALWAREBAZAAR_AUTH_KEY: ${{ secrets.MALWAREBAZAAR_AUTH_KEY }}
+        run: python -m pipeline intel
+
       - name: Build stats, charts and README
         run: python -m pipeline build
+
+      - name: Write weekly reports
+        run: python -m pipeline report
 
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data docs/data/stats.json docs/charts README.md
+          for path in data docs/data docs/charts reports README.md; do
+            if [ -e "$path" ]; then git add -A -- "$path"; fi
+          done
           if git diff --cached --quiet; then
             echo "Nothing new."
             exit 0

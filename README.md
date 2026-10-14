@@ -50,6 +50,21 @@ Refreshed automatically every 6 hours by GitHub Actions.
 | [T1083](https://attack.mitre.org/techniques/T1083/) File and Directory Discovery | Discovery | 3 |
 <!-- STATS:END -->
 
+## What you can explore
+
+- **Watch attacks replay.** Selected sessions play back in the browser exactly as the attacker saw the fake
+  shell, typed character by character, from Cowrie's own terminal recordings.
+- **Click anything.** Countries, IPs, campaigns, malware samples and passwords open a detail panel: an attacker
+  profile shows when it came back, what it tried, which campaign it belongs to and what it downloaded. Every
+  panel has its own link (`#all&ip=…`), so findings are easy to share.
+- **Campaigns.** Sessions that run the same commands are grouped, and known families get a name
+  (Mirai-style loaders by their `/bin/busybox` tag, the Outlaw `mdrfckr` SSH key, XMRig and RedTail miners).
+- **Malware analysis.** Every captured file is identified on the VM from its headers (CPU architecture, static
+  or dynamic, stripped, UPX-packed, dropper scripts and the builds they fetch) and optionally checked against
+  VirusTotal and MalwareBazaar.
+- **Weekly reports.** Each ISO week gets a Markdown report with changes against the previous week, new
+  campaigns and samples, never-seen-before passwords and records: [`reports/`](reports/README.md).
+
 ## How it works
 
 ```mermaid
@@ -57,11 +72,11 @@ flowchart LR
     bots(["Bots & attackers<br>on the internet"]) -->|"SSH :22 · Telnet :23"| cowrie
     subgraph azure ["Microsoft Azure"]
         cowrie["Cowrie honeypot<br>Docker on a B1s VM"] -->|JSON events| shipper["shipper.py<br>hourly, managed identity"]
-        shipper -->|"cowrie/YYYY-MM-DD.json.gz"| blob[("Blob Storage<br>private, Entra ID only")]
+        shipper -->|"daily logs, session recordings,<br>malware metadata"| blob[("Blob Storage<br>private, Entra ID only")]
     end
     subgraph github ["GitHub"]
-        actions["Actions, every 6 h<br>OIDC → reader identity"] -->|"daily summaries<br>+ GeoIP + ATT&CK"| data["data/daily/*.json"]
-        data --> site["Dashboard on Pages<br>+ charts in this README"]
+        actions["Actions, every 6 h<br>OIDC → reader identity"] -->|"daily summaries, campaigns<br>+ GeoIP + ATT&CK"| data["data/daily/*.json"]
+        data --> site["Dashboard on Pages<br>+ replays, weekly reports"]
     end
     blob --> actions
 ```
@@ -69,15 +84,20 @@ flowchart LR
 1. **Sensor.** [Cowrie](https://github.com/cowrie/cowrie) listens on ports 22 and 23 and pretends to be a Linux
    server. It logs every login attempt, accepts some of them, and gives the attacker a fully emulated shell that
    records each command and downloaded file. The real `sshd` moves to port 22222, reachable only from my IP.
-2. **Shipping.** Every hour a small stdlib-only Python script uploads that day's log to a private Blob container.
-   It authenticates with the VM's managed identity through the Instance Metadata Service, so the VM holds no key.
+2. **Shipping.** Every hour a small stdlib-only Python script uploads that day's log, each finished session
+   recording and the header metadata of each captured file to a private Blob container. Samples are only parsed,
+   never executed, and never leave the VM. The script authenticates with the VM's managed identity through the
+   Instance Metadata Service, so the VM holds no key.
 3. **Analysis.** Every 6 hours a GitHub Actions workflow logs in to Azure through OIDC federation, downloads only
    new or changed blobs and condenses each day into a small summary in [`data/daily/`](data/daily). IPs are
    enriched with country and ASN from the public-domain [iptoasn.com](https://iptoasn.com) dataset, and
    commands are mapped to [MITRE ATT&CK](https://attack.mitre.org) techniques
-   ([`pipeline/attack.py`](pipeline/attack.py)).
-4. **Publishing.** The same workflow rebuilds [`stats.json`](docs/data/stats.json), the SVG charts and the numbers
-   above, commits them, and deploys the [D3 dashboard](docs) to GitHub Pages.
+   ([`pipeline/attack.py`](pipeline/attack.py)) and grouped into campaigns
+   ([`pipeline/campaigns.py`](pipeline/campaigns.py)). The best recording of each campaign is converted into a
+   sanitized replay ([`pipeline/tty.py`](pipeline/tty.py)).
+4. **Publishing.** The same workflow rebuilds [`stats.json`](docs/data/stats.json), attacker profiles, replays,
+   the SVG charts, the numbers above and the [weekly reports](reports/README.md), commits them, and deploys the
+   [D3 dashboard](docs) to GitHub Pages.
 
 ## Security design
 
@@ -93,11 +113,15 @@ A honeypot invites attackers in on purpose, so the design assumes the emulator i
 | Log tampering after a host compromise | The VM's role is scoped to a single container, and blob soft delete keeps overwritten logs for 7 days |
 | XSS or Markdown injection through attacker-chosen passwords and commands | The dashboard writes attacker text only through `textContent`, under a strict CSP with Subresource Integrity on CDN scripts. README and SVG output is escaped, and tests feed it hostile input |
 | Clicking live malware links | URLs are defanged (`hxxp://203.0.113[.]5/x.sh`), hashes link to VirusTotal, and samples never leave the VM |
+| Hostile terminal output in replays | Control characters are stripped, binary dumps collapsed, URLs defanged even when typed one character at a time, and the in-page terminal renders text only (no xterm.js, so the CSP stays strict) |
+| Analysing malware on the sensor | The shipper reads at most 32 MB per sample and parses ELF headers with `struct`; nothing is executed, and only the metadata is uploaded |
 
 ## What gets published
 
-Raw logs stay private in Azure Storage. The repository only receives per-day aggregates: per-IP counters,
-top usernames, passwords and commands, client banners, technique counts and download hashes. Source IPs are
+Raw logs stay private in Azure Storage. The repository only receives per-day aggregates: per-IP counters and
+profiles, top usernames, passwords and commands, client banners, technique counts, campaigns and download
+hashes, plus replays of a few selected sessions (what the attacker saw in the fake shell) and the header metadata
+of captured files. Source IPs are
 published because they are the attack sources, the same data shared on AbuseIPDB and blocklists. Most of them are
 compromised machines or rented servers, so the dashboard links to a reputation lookup and asks visitors to
 report abuse, not retaliate.
@@ -126,6 +150,8 @@ prints. Then:
 
 1. In GitHub, go to **Settings → Pages** and set the source to **GitHub Actions**.
 2. Under **Actions → Update stats & deploy dashboard**, click **Run workflow**.
+3. Optional: add free API keys as Actions secrets `VIRUSTOTAL_API_KEY` and `MALWAREBAZAAR_AUTH_KEY` to see
+   detections next to each captured sample. Without them everything else still works.
 
 First boot takes about 5 minutes. Bots usually find the new IP within the hour.
 
@@ -155,7 +181,7 @@ Expect Microsoft Defender for Cloud to flag brute-force attempts against the VM.
 
 ```bash
 make test            # unit tests (Python 3.9+, no dependencies)
-make demo            # synthetic attacks -> docs/data/stats.demo.json
+make demo            # synthetic attacks and replays -> docs/data/demo/
 make serve           # http://localhost:8000/?demo
 ```
 
@@ -165,9 +191,10 @@ was recorded from a real Cowrie 3.1 container under simulated attack, including 
 ```text
 infra/       Bicep template and cloud-init: VM, network, storage, identities, RBAC
 sensor/      docker-compose.yml for Cowrie and the hourly log shipper
-pipeline/    fetch -> daily summaries -> stats.json, README charts, ATT&CK mapping
-docs/        the dashboard (GitHub Pages): HTML, CSS, D3, generated data and charts
-data/daily/  one committed summary per day
+pipeline/    fetch -> daily summaries -> stats.json, replays, campaigns, reports, ATT&CK mapping
+docs/        the dashboard (GitHub Pages): HTML, CSS, D3, replay player, generated data and charts
+data/        one committed summary per day and the metadata of each captured file
+reports/     weekly Markdown reports written by the pipeline
 scripts/     deploy, admin-IP and sensor update helpers
 tests/       unit tests and the recorded Cowrie fixture
 ```
@@ -177,7 +204,7 @@ tests/       unit tests and the recorded Cowrie fixture
 - Report the noisiest IPs to AbuseIPDB automatically
 - Add an HTTP honeypot and sensors in more regions to compare who scans where
 - Ship the same events to Microsoft Sentinel and write KQL detections against them
-- Triage captured samples with YARA rules
+- Triage captured samples with YARA rules on the sensor
 
 ## Credits
 
