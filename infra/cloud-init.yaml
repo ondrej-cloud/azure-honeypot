@@ -117,7 +117,12 @@ runcmd:
   - rm -f /etc/systemd/system/ssh.service.d/00-socket.conf /etc/systemd/system/ssh.socket.d/addresses.conf
   - systemctl daemon-reload
   - systemctl enable ssh.service
-  - systemctl restart ssh.service
+  # A listener started by the socket (or by needrestart after the upgrade) can
+  # outlive the unit and keep the port; the new sshd then fails to bind and
+  # systemd deletes /run/sshd, which breaks every later login. Clear it first.
+  - systemctl stop ssh.service
+  - [sh, -c, "pkill -f '^sshd: /usr/sbin/sshd -D' || true; sleep 1"]
+  - systemctl start ssh.service
   - systemctl enable --now docker.service
   - systemctl enable --now honeypot-egress.service
   - docker compose -f /opt/honeypot/docker-compose.yml up -d
