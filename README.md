@@ -17,8 +17,8 @@
 Refreshed automatically every 6 hours by GitHub Actions.
 
 <!-- STATS:START -->
-> **34** connections · **5** unique IPs · **8** login attempts · **77** commands · **3** countries
-> <sub>Since 2026-10-14 · updated 2026-10-14 08:24:31 UTC · sensor `azure-denmarkeast`</sub>
+> **166** connections · **31** unique IPs · **101** login attempts · **746** commands · **15** countries
+> <sub>Since 2026-10-14 · updated 2026-10-14 11:57:07 UTC · sensor `azure-denmarkeast`</sub>
 
 <img src="docs/charts/activity.svg" alt="Connections per day, last 30 days" width="100%">
 
@@ -29,23 +29,25 @@ Refreshed automatically every 6 hours by GitHub Actions.
 
 | Most common commands | Runs |
 |---|---:|
-| `sh` | 6 |
-| `shell` | 6 |
-| `system` | 6 |
-| `/bin/busybox HISILICON` | 6 |
-| `enable` | 5 |
-| `ping; sh` | 4 |
-| *(empty)* | 4 |
-| `/bin/busybox cat /proc/self/exe \|\| cat /proc/self/exe` | 2 |
+| `/bin/busybox HISILICON` | 62 |
+| `sh` | 50 |
+| `shell` | 50 |
+| `system` | 50 |
+| `enable` | 49 |
+| *(empty)* | 43 |
+| `ping; sh` | 40 |
+| `export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/…` | 21 |
 
 | MITRE ATT&CK technique | Tactic | Sessions |
 |---|---|---:|
-| [T1110.001](https://attack.mitre.org/techniques/T1110/001/) Brute Force: Password Guessing | Credential Access | 7 |
-| [T1059.004](https://attack.mitre.org/techniques/T1059/004/) Command and Scripting Interpreter: Unix Shell | Execution | 7 |
-| [T1222.002](https://attack.mitre.org/techniques/T1222/002/) File and Directory Permissions Modification | Defense Evasion | 2 |
-| [T1083](https://attack.mitre.org/techniques/T1083/) File and Directory Discovery | Discovery | 1 |
-| [T1070.004](https://attack.mitre.org/techniques/T1070/004/) Indicator Removal: File Deletion | Defense Evasion | 1 |
-| [T1105](https://attack.mitre.org/techniques/T1105/) Ingress Tool Transfer | Command and Control | 1 |
+| [T1110.001](https://attack.mitre.org/techniques/T1110/001/) Brute Force: Password Guessing | Credential Access | 99 |
+| [T1059.004](https://attack.mitre.org/techniques/T1059/004/) Command and Scripting Interpreter: Unix Shell | Execution | 72 |
+| [T1222.002](https://attack.mitre.org/techniques/T1222/002/) File and Directory Permissions Modification | Defense Evasion | 43 |
+| [T1082](https://attack.mitre.org/techniques/T1082/) System Information Discovery | Discovery | 36 |
+| [T1070.004](https://attack.mitre.org/techniques/T1070/004/) Indicator Removal: File Deletion | Defense Evasion | 27 |
+| [T1105](https://attack.mitre.org/techniques/T1105/) Ingress Tool Transfer | Command and Control | 6 |
+| [T1083](https://attack.mitre.org/techniques/T1083/) File and Directory Discovery | Discovery | 2 |
+| [T1033](https://attack.mitre.org/techniques/T1033/) System Owner/User Discovery | Discovery | 2 |
 <!-- STATS:END -->
 
 ## How it works
