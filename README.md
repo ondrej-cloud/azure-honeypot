@@ -17,8 +17,8 @@
 Refreshed automatically every 6 hours by GitHub Actions.
 
 <!-- STATS:START -->
-> **3,061** connections · **126** unique IPs · **2,866** login attempts · **5,813** commands · **42** countries
-> <sub>Since 2026-10-14 · updated 2026-10-14 21:25:14 UTC · sensor `azure-denmarkeast`</sub>
+> **3,069** connections · **128** unique IPs · **2,872** login attempts · **5,818** commands · **42** countries
+> <sub>Since 2026-10-14 · updated 2026-10-14 21:43:50 UTC · sensor `azure-denmarkeast`</sub>
 
 <img src="docs/charts/activity.svg" alt="Connections per day, last 30 days" width="100%">
 
@@ -40,8 +40,8 @@ Refreshed automatically every 6 hours by GitHub Actions.
 
 | MITRE ATT&CK technique | Tactic | Sessions |
 |---|---|---:|
-| [T1110.001](https://attack.mitre.org/techniques/T1110/001/) Brute Force: Password Guessing | Credential Access | 2,857 |
-| [T1082](https://attack.mitre.org/techniques/T1082/) System Information Discovery | Discovery | 2,475 |
+| [T1110.001](https://attack.mitre.org/techniques/T1110/001/) Brute Force: Password Guessing | Credential Access | 2,863 |
+| [T1082](https://attack.mitre.org/techniques/T1082/) System Information Discovery | Discovery | 2,480 |
 | [T1059.004](https://attack.mitre.org/techniques/T1059/004/) Command and Scripting Interpreter: Unix Shell | Execution | 392 |
 | [T1222.002](https://attack.mitre.org/techniques/T1222/002/) File and Directory Permissions Modification | Defense Evasion | 215 |
 | [T1070.004](https://attack.mitre.org/techniques/T1070/004/) Indicator Removal: File Deletion | Defense Evasion | 144 |
