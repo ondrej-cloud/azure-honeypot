@@ -1,0 +1,1 @@
+{"v":1,"id":"7ab552f01de999cb","session":"ee238a40188c","ip":"109.160.32.117","protocol":"ssh","start":"2026-10-14T11:28:59Z","duration":0.7,"campaign":"c-55521c2b","truncated":false,"frames":[[0.0,"$ uname -s -v -n -r -m\r\n"],[0.008,"Linux srv-db01 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.90-1 (2024-05-03) x86_64\n"]]}

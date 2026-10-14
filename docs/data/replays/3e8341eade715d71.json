@@ -1,0 +1,1 @@
+{"v":1,"id":"3e8341eade715d71","session":"9213ab38be3f","ip":"223.134.89.104","protocol":"ssh","start":"2026-10-14T10:26:42Z","duration":116.6,"campaign":"c-4e6c8b4f","truncated":false,"frames":[[0.0,"$ echo Hi | cat -n\r\n"],[0.007,"     1  Hi\n"]]}
