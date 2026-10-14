@@ -60,7 +60,15 @@ Student subscriptions only allow some regions and sizes. Try another, e.g.
   LOCATION=polandcentral scripts/deploy.sh
   VM_SIZE=Standard_B2ats_v2 scripts/deploy.sh"
 
-az group create --name "$RG" --location "$LOCATION" --output none
+# Azure enforces MFA on create/update/delete only, so this is the first call that can hit it.
+if ! err=$(az group create --name "$RG" --location "$LOCATION" --output none 2>&1); then
+  grep -q AADSTS50079 <<<"$err" && err+="
+
+Azure requires multi-factor authentication to create resources, and this account has no MFA method yet.
+Run the az logout / az login commands above and set up a method when the browser asks for one
+(or beforehand at https://aka.ms/mfasetup), then run this script again."
+  die "$err"
+fi
 admin_id=$(az ad signed-in-user show --query id -o tsv 2>/dev/null || true)
 
 echo "Deploying (about 2 minutes)..."

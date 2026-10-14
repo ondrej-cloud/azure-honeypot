@@ -86,7 +86,9 @@ make deploy                      # or: LOCATION=swedencentral make deploy
 
 `make deploy` checks that the VM size is available in your region, deploys [`infra/main.bicep`](infra/main.bicep),
 and sets the three non-secret repository variables the workflow needs (`AZURE_CLIENT_ID`, `AZURE_TENANT_ID`,
-`STORAGE_ACCOUNT`). Then:
+`STORAGE_ACCOUNT`). Azure requires multi-factor authentication for creating resources, so if it stops with
+`AADSTS50079`, set up a method at [aka.ms/mfasetup](https://aka.ms/mfasetup) and run the `az login` command it
+prints. Then:
 
 1. In GitHub, go to **Settings → Pages** and set the source to **GitHub Actions**.
 2. Under **Actions → Update stats & deploy dashboard**, click **Run workflow**.
