@@ -29,6 +29,10 @@ fi
 [[ -f $SSH_KEY ]] || die "no SSH public key at $SSH_KEY. Create one with: ssh-keygen -t ed25519"
 [[ -n $GITHUB_REPO ]] || die "push this repo to GitHub first, or set GITHUB_REPO=owner/name"
 ADMIN_IP=${ADMIN_IP:-$(curl -fsS https://api.ipify.org)} || die "could not detect your public IP, set ADMIN_IP"
+# Newer repositories sign Actions OIDC tokens with immutable IDs (repo:owner@123/name@456), older ones with
+# names. The federated credential must match exactly, so ask GitHub which one this repository uses.
+SUBJECT_PREFIX=$(gh api "repos/$GITHUB_REPO/actions/oidc/customization/sub" -q .sub_claim_prefix 2>/dev/null || true)
+SUBJECT_PREFIX=${SUBJECT_PREFIX:-repo:$GITHUB_REPO}
 
 cat <<EOF
 Subscription  $(az account show --query name -o tsv)
@@ -77,7 +81,8 @@ outputs=$(az deployment group create \
   --name honeypot \
   --template-file infra/main.bicep \
   --parameters prefix="$PREFIX" vmSize="$VM_SIZE" adminSourceCidr="$ADMIN_IP/32" \
-               sshPublicKey="$(cat "$SSH_KEY")" githubRepo="$GITHUB_REPO" adminPrincipalId="$admin_id" \
+               sshPublicKey="$(cat "$SSH_KEY")" githubRepo="$GITHUB_REPO" githubSubjectPrefix="$SUBJECT_PREFIX" \
+               adminPrincipalId="$admin_id" \
   --query properties.outputs -o json)
 
 out() { python3 -c "import json, sys; print(json.load(sys.stdin)['$1']['value'])" <<<"$outputs"; }

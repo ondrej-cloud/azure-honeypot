@@ -28,6 +28,9 @@ param adminSshPort int = 22222
 @description('GitHub repository (owner/name) whose main-branch workflow may read the logs.')
 param githubRepo string
 
+@description('Start of the OIDC subject GitHub signs for that repository. Newer repositories use immutable IDs (repo:owner@123/name@456); deploy.sh reads the right one from the GitHub API.')
+param githubSubjectPrefix string = 'repo:${githubRepo}'
+
 @description('Object ID of your Entra ID user, granted read access to the raw logs. Empty to skip.')
 param adminPrincipalId string = ''
 
@@ -253,7 +256,7 @@ resource githubFederation 'Microsoft.ManagedIdentity/userAssignedIdentities/fede
   name: 'github-main'
   properties: {
     issuer: 'https://token.actions.githubusercontent.com'
-    subject: 'repo:${githubRepo}:ref:refs/heads/main'
+    subject: '${githubSubjectPrefix}:ref:refs/heads/main'
     audiences: ['api://AzureADTokenExchange']
   }
 }
