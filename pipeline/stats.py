@@ -68,6 +68,14 @@ def defang(url: str) -> str:
     return f"{scheme}://{parts.netloc.replace('.', '[.]')}{rest}"
 
 
+URL_IN_TEXT = re.compile(r"(?i)\b(?:https?|ftps?|tftp)://[^\s'\"<>;|&()`]+")
+
+
+def defang_text(text: str) -> str:
+    """Defang every URL inside free text such as a command line or a campaign name."""
+    return URL_IN_TEXT.sub(lambda m: defang(m.group(0)), text)
+
+
 def _clean(value: object, limit: int = MAX_TEXT) -> str | None:
     """Printable, bounded text from third-party metadata, or None."""
     if not isinstance(value, str) or not value:
@@ -367,7 +375,7 @@ def build_window(all_days: list[dict], start: dt.date, end: dt.date, geo: GeoDB,
         "usernames": _merge_top(days, "usernames"),
         "passwords": _merge_top(days, "passwords"),
         "credentials": _merge_top(days, "credentials"),
-        "commands": _merge_top(days, "commands"),
+        "commands": [[defang_text(cmd), n] for cmd, n in _merge_top(days, "commands")],
         "clients": _merge_top(days, "clients"),
         "hassh": _merge_top(days, "hassh", 10),
         "techniques": technique_rows,
@@ -402,13 +410,13 @@ def _window_campaigns(days: list[dict], geo: GeoDB, candidates: list[dict], repl
                                         "ips": 0, "countries": [], "first": c["first"], "last": c["last"],
                                         "techniques": [], "commands": [], "downloads": [], "replay": None,
                                         "new": False, "_ips": Counter(), "_techniques": Counter()})
-            m["name"], m["known"] = c["name"], c["known"]       # days are in order: the latest name wins
+            m["name"], m["known"] = defang_text(c["name"]), c["known"]   # days are in order: the latest name wins
             m["sessions"] += c["sessions"]
             m["_ips"].update(c.get("ips", {}))
             m["first"], m["last"] = min(m["first"], c["first"]), max(m["last"], c["last"])
             m["_techniques"].update(c.get("techniques", {}))
             if len(c.get("commands", [])) > len(m["commands"]):
-                m["commands"] = [cmd[:MAX_TEXT] for cmd in c["commands"][:MAX_CAMPAIGN_COMMANDS]]
+                m["commands"] = [defang_text(cmd[:MAX_TEXT]) for cmd in c["commands"][:MAX_CAMPAIGN_COMMANDS]]
             for sha in c.get("downloads", []):
                 if sha not in m["downloads"] and len(m["downloads"]) < 5:
                     m["downloads"].append(sha)
@@ -448,7 +456,7 @@ def build(all_days: list[dict], geo: GeoDB, *, now: dt.datetime | None = None, d
     for day in all_days:
         for cid, c in day.get("campaigns", {}).items():
             first_seen[cid] = min(first_seen.get(cid, c["first"]), c["first"])
-            names[cid] = c["name"]
+            names[cid] = defang_text(c["name"])
     ranges = window_ranges(all_days)
     first, end = dt.date.fromisoformat(all_days[0]["date"]), ranges[0][3]
     stats["sensor"] = {"name": all_days[-1].get("sensor", ""), "first_day": first.isoformat(),
@@ -533,7 +541,7 @@ def build_profiles(all_days: list[dict], geo: GeoDB, *, replay_ids: set[str] | f
             "login_success": success, "commands": commands, "protocols": dict(a["protocols"].most_common()),
             "daily": a["daily"],
             "credentials": [[u, pw, n] for (u, pw), n in a["credentials"].most_common(10)],
-            "top_commands": [[cmd, n] for cmd, n in a["commands"].most_common(10)],
+            "top_commands": [[defang_text(cmd), n] for cmd, n in a["commands"].most_common(10)],
             "campaigns": [[cid, n] for cid, n in sorted(a["campaigns"].items(), key=lambda kv: (-kv[1], kv[0]))],
             "downloads": a["downloads"],
             "clients": [[b, n] for b, n in a["clients"].most_common(3)],

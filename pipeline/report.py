@@ -14,7 +14,7 @@ from pathlib import Path
 
 from .geo import GeoDB
 from .render import country_name, md_code
-from .stats import defang
+from .stats import defang, defang_text
 
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
@@ -341,7 +341,7 @@ def _week_report(year: int, week: int, agg: dict, prev: dict | None, seen: dict,
         for c in agg["campaigns"][:8]:
             new = " **new**" if seen["campaign"].get(c["id"], "") in agg["dates"] else ""
             replay = next((links.replay(sha) for sha in agg["campaign_ttys"].get(c["id"], []) if links.replay(sha)), "")
-            rows.append([md_code(str(c["name"]), 60) + new, f"{c['sessions']:,}", f"{len(c['ips']):,}",
+            rows.append([md_code(defang_text(str(c["name"])), 60) + new, f"{c['sessions']:,}", f"{len(c['ips']):,}",
                          _ts_day(c["first"]), _join(links.campaign(c["id"]), replay)])
         lines += _table(["Campaign", "Sessions", "IPs", "First seen", "Links"], "lrrll", rows)
     else:
@@ -416,7 +416,7 @@ def _index(weeks: list[tuple[int, int, dict]], all_time: dict, links: Links, tod
         name = _name(year, week)
         progress = " _(in progress)_" if monday <= today <= monday + dt.timedelta(days=6) else ""
         t = agg["totals"]
-        top = md_code(str(agg["campaigns"][0]["name"]), 40) if agg["campaigns"] else "–"
+        top = md_code(defang_text(str(agg["campaigns"][0]["name"])), 40) if agg["campaigns"] else "–"
         rows.append([f"[{name}]({name}.md){progress}", _span(monday, monday + dt.timedelta(days=6)),
                      f"{t['sessions']:,}", f"{t['unique_ips']:,}", f"{t['login_attempts']:,}", f"{t['commands']:,}",
                      f"{agg['new_samples']:,}", top])
@@ -426,7 +426,7 @@ def _index(weeks: list[tuple[int, int, dict]], all_time: dict, links: Links, tod
     rows = _records_rows(all_time["records"], links, all_time["sessions_to_tty"])
     if all_time["campaigns"]:
         c = all_time["campaigns"][0]
-        rows.append(["Most active campaign", f"{md_code(str(c['name']), 50)} · {c['sessions']:,} sessions",
+        rows.append(["Most active campaign", f"{md_code(defang_text(str(c['name'])), 50)} · {c['sessions']:,} sessions",
                      links.campaign(c["id"]) or "–"])
     lines += _table(["Record", "Value", "Who"], "lll", rows) if rows else ["_No data yet._"]
     lines += ["", f"<sub>Data through {_day(dt.date.fromisoformat(all_time['dates'][-1]))}.</sub>", ""]
