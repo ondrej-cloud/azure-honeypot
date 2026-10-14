@@ -7,6 +7,7 @@ Locally, `az login` with your own account works the same way.
 from __future__ import annotations
 
 import subprocess
+import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -53,3 +54,12 @@ class BlobContainer:
 
     def download(self, name: str) -> bytes:
         return self._get(f"{self.base}/{urllib.parse.quote(name)}")
+
+    def get(self, name: str) -> bytes | None:
+        """Like download, but None when the blob does not exist (yet)."""
+        try:
+            return self.download(name)
+        except urllib.error.HTTPError as err:
+            if err.code == 404:
+                return None
+            raise

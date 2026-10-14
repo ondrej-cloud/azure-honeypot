@@ -2,6 +2,6 @@ __pycache__/
 *.pyc
 .cache/
 build/
-docs/data/stats.demo.json
+docs/data/demo/
 .DS_Store
 .admin-ips*
