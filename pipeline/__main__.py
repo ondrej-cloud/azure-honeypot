@@ -221,7 +221,8 @@ def cmd_intel(args: argparse.Namespace) -> None:
     if not MALWARE.is_dir():
         print("intel: no malware metadata yet")
         return
-    print(f"intel: updated {intel.enrich(MALWARE, vt_key=vt_key, mb_key=mb_key)} sample(s)")
+    updated = intel.enrich(MALWARE, vt_key=vt_key, mb_key=mb_key, max_vt=args.max_vt)
+    print(f"intel: updated {updated} sample(s)")
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -242,6 +243,8 @@ def main(argv: list[str] | None = None) -> None:
     p.set_defaults(func=cmd_ingest)
 
     p = sub.add_parser("intel", help="look captured samples up on VirusTotal / MalwareBazaar")
+    # The free VirusTotal API allows 4 lookups a minute and 500 a day; 16 per run (every 6 h) stays far below.
+    p.add_argument("--max-vt", type=int, default=16, help="VirusTotal lookups per run (default: 16)")
     p.set_defaults(func=cmd_intel)
 
     p = sub.add_parser("build", help="build stats.json, profiles.json, README charts and the README stats block")
