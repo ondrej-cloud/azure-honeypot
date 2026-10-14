@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240" role="img"><title>Connections per day, last 30 days</title><style>
+text{font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-size:12px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11.5px}
+.ink{fill:#0b0b0b}.ink2{fill:#52514e}.muted{fill:#898781}
+.grid{stroke:#e1e0d9}.axis{stroke:#c3c2b7}
+.mark{fill:#2a78d6}.line{stroke:#2a78d6;fill:none}.area{fill:#2a78d6;fill-opacity:.1}
+.ring{stroke:#ffffff}
+@media (prefers-color-scheme:dark){
+.ink{fill:#f0efec}.ink2{fill:#c3c2b7}.grid{stroke:#2c2c2a}.axis{stroke:#383835}
+.mark{fill:#3987e5}.line{stroke:#3987e5}.area{fill:#3987e5}.ring{stroke:#0d1117}}
+</style><line class="grid" x1="44" x2="736" y1="212.0" y2="212.0"/><text class="muted" x="36" y="216.0" text-anchor="end">0</text><line class="grid" x1="44" x2="736" y1="163.0" y2="163.0"/><text class="muted" x="36" y="167.0" text-anchor="end">10</text><line class="grid" x1="44" x2="736" y1="114.0" y2="114.0"/><text class="muted" x="36" y="118.0" text-anchor="end">20</text><line class="grid" x1="44" x2="736" y1="65.0" y2="65.0"/><text class="muted" x="36" y="69.0" text-anchor="end">30</text><line class="grid" x1="44" x2="736" y1="16.0" y2="16.0"/><text class="muted" x="36" y="20.0" text-anchor="end">40</text><line class="axis" x1="44" x2="736" y1="212.0" y2="212.0"/><text class="muted" x="390.0" y="232" text-anchor="middle">Oct 14</text><path class="area" d="M390.0,212.0 L390.0,45.4 L390.0,212.0Z"/><polyline class="line" points="390.0,45.4" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle class="mark ring" cx="390.0" cy="45.4" r="4" stroke-width="2"/><text class="ink" x="400.0" y="49.4" font-weight="600">34</text></svg>

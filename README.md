@@ -17,7 +17,35 @@
 Refreshed automatically every 6 hours by GitHub Actions.
 
 <!-- STATS:START -->
-_No data yet: the sensor is warming up. This section refreshes automatically every 6 hours once attacks start arriving._
+> **34** connections · **5** unique IPs · **8** login attempts · **77** commands · **3** countries
+> <sub>Since 2026-10-14 · updated 2026-10-14 08:24:31 UTC · sensor `azure-denmarkeast`</sub>
+
+<img src="docs/charts/activity.svg" alt="Connections per day, last 30 days" width="100%">
+
+<table><tr>
+<td width="50%"><b>Top countries</b> · connections<br><br><img src="docs/charts/countries.svg" alt="Top attacking countries" width="100%"></td>
+<td width="50%"><b>Top passwords tried</b> · attempts<br><br><img src="docs/charts/passwords.svg" alt="Most tried passwords" width="100%"></td>
+</tr></table>
+
+| Most common commands | Runs |
+|---|---:|
+| `sh` | 6 |
+| `shell` | 6 |
+| `system` | 6 |
+| `/bin/busybox HISILICON` | 6 |
+| `enable` | 5 |
+| `ping; sh` | 4 |
+| *(empty)* | 4 |
+| `/bin/busybox cat /proc/self/exe \|\| cat /proc/self/exe` | 2 |
+
+| MITRE ATT&CK technique | Tactic | Sessions |
+|---|---|---:|
+| [T1110.001](https://attack.mitre.org/techniques/T1110/001/) Brute Force: Password Guessing | Credential Access | 7 |
+| [T1059.004](https://attack.mitre.org/techniques/T1059/004/) Command and Scripting Interpreter: Unix Shell | Execution | 7 |
+| [T1222.002](https://attack.mitre.org/techniques/T1222/002/) File and Directory Permissions Modification | Defense Evasion | 2 |
+| [T1083](https://attack.mitre.org/techniques/T1083/) File and Directory Discovery | Discovery | 1 |
+| [T1070.004](https://attack.mitre.org/techniques/T1070/004/) Indicator Removal: File Deletion | Defense Evasion | 1 |
+| [T1105](https://attack.mitre.org/techniques/T1105/) Ingress Tool Transfer | Command and Control | 1 |
 <!-- STATS:END -->
 
 ## How it works
