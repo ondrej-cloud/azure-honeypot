@@ -50,6 +50,11 @@ Refreshed automatically every 6 hours by GitHub Actions.
 | [T1087.001](https://attack.mitre.org/techniques/T1087/001/) Account Discovery: Local Account | Discovery | 8 |
 <!-- STATS:END -->
 
+## Findings
+
+- [**One bot, 71% of the traffic**](writeups/2026-10-one-bot/README.md): the "Romanian" spike in the first 72 hours
+  was 26 rented IPs taking turns on one shared password list, 500 logins per shift.
+
 ## What you can explore
 
 - **Watch attacks replay.** Selected sessions play back in the browser exactly as the attacker saw the fake
@@ -195,6 +200,7 @@ pipeline/    fetch -> daily summaries -> stats.json, replays, campaigns, reports
 docs/        the dashboard (GitHub Pages): HTML, CSS, D3, replay player, generated data and charts
 data/        one committed summary per day and the metadata of each captured file
 reports/     weekly Markdown reports written by the pipeline
+writeups/    hand-written investigations of what the sensor caught, with the scripts behind them
 scripts/     deploy, admin-IP and sensor update helpers
 tests/       unit tests and the recorded Cowrie fixture
 ```
