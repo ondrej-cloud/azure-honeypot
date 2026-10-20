@@ -4,7 +4,7 @@ Written automatically by the pipeline from the honeypot's daily summaries. [Live
 
 | Week | Dates | Connections | Unique IPs | Login attempts | Commands | New samples | Top campaign |
 |---|---|---:|---:|---:|---:|---:|---|
-| [2026-W43](2026-W43.md) _(in progress)_ | Oct 19 – Oct 25, 2026 | 4,444 | 216 | 4,059 | 57,102 | 4 | `Cluster: uname -s -v -n -r -m` |
+| [2026-W43](2026-W43.md) _(in progress)_ | Oct 19 – Oct 25, 2026 | 5,598 | 275 | 5,073 | 59,368 | 4 | `Cluster: uname -s -v -n -r -m` |
 | [2026-W42](2026-W42.md) | Oct 12 – Oct 18, 2026 | 28,984 | 877 | 26,582 | 57,198 | 47 | `Cluster: uname -s -v -n -r -m` |
 
 ## All-time records
@@ -13,9 +13,9 @@ Written automatically by the pipeline from the honeypot's daily summaries. [Live
 |---|---|---|
 | Longest session | 5 min 8 s (ssh) · Oct 17 | [103.132.1.231](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=103.132.1.231) |
 | Most commands in one session | 556 · Oct 15 | [112.103.93.244](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=112.103.93.244) · [Replay](https://ondrej-cloud.github.io/azure-honeypot/#all&replay=a88c2c7eb42012b7) |
-| Longest password | `\xce\xdf\xcd\xcd\xc9\xd1\xcc\xda` (32 characters) | [112.168.171.175](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=112.168.171.175) |
-| Most login attempts from one IP | 2,025 | [160.153.187.122](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=160.153.187.122) |
-| Most persistent IP | active on 6 days | [165.22.18.23](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=165.22.18.23) |
-| Most active campaign | `Cluster: uname -s -v -n -r -m` · 19,507 sessions | [Dashboard](https://ondrej-cloud.github.io/azure-honeypot/#all&campaign=c-55521c2b) |
+| Longest password | `\xdd\xd6\xdf\xd0\xd9\xdb\xd3\xdb` (32 characters) | [14.47.200.242](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=14.47.200.242) |
+| Most login attempts from one IP | 2,057 | [160.153.187.122](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=160.153.187.122) |
+| Most persistent IP | active on 7 days | [165.22.18.23](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=165.22.18.23) |
+| Most active campaign | `Cluster: uname -s -v -n -r -m` · 20,242 sessions | [Dashboard](https://ondrej-cloud.github.io/azure-honeypot/#all&campaign=c-55521c2b) |
 
-<sub>Data through Oct 19, 2026.</sub>
+<sub>Data through Oct 20, 2026.</sub>
