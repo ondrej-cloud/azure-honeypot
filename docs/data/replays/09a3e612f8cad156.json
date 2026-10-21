@@ -1,0 +1,1 @@
+{"v":1,"id":"09a3e612f8cad156","session":"746f4bee9563","ip":"46.6.127.33","protocol":"ssh","start":"2026-10-21T19:57:34Z","duration":5.0,"campaign":"outlaw-mdrfckr","truncated":false,"frames":[[0.0,"$ df -h | head -n 2 | awk 'FNR == 2 {print $2;}'\r\n"],[0.012,"bash: line 1: /usr/bin/df: cannot execute binary file: Exec format error\n"]]}
