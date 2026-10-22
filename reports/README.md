@@ -4,7 +4,7 @@ Written automatically by the pipeline from the honeypot's daily summaries. [Live
 
 | Week | Dates | Connections | Unique IPs | Login attempts | Commands | New samples | Top campaign |
 |---|---|---:|---:|---:|---:|---:|---|
-| [2026-W43](2026-W43.md) _(in progress)_ | Oct 19 – Oct 25, 2026 | 17,343 | 1,114 | 15,929 | 81,444 | 37 | `Cluster: uname -s -v -n -r -m` |
+| [2026-W43](2026-W43.md) _(in progress)_ | Oct 19 – Oct 25, 2026 | 18,964 | 1,214 | 17,317 | 83,873 | 37 | `Cluster: uname -s -v -n -r -m` |
 | [2026-W42](2026-W42.md) | Oct 12 – Oct 18, 2026 | 28,984 | 877 | 26,582 | 57,198 | 47 | `Cluster: uname -s -v -n -r -m` |
 
 ## All-time records
@@ -16,6 +16,6 @@ Written automatically by the pipeline from the honeypot's daily summaries. [Live
 | Longest password | `\xce\xdf\xcd\xcd\xc9\xd1\xcc\xda` (32 characters) | [14.33.48.192](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=14.33.48.192) |
 | Most login attempts from one IP | 2,057 | [160.153.187.122](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=160.153.187.122) |
 | Most persistent IP | active on 9 days | [165.22.18.23](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=165.22.18.23) |
-| Most active campaign | `Cluster: uname -s -v -n -r -m` · 28,769 sessions | [Dashboard](https://ondrej-cloud.github.io/azure-honeypot/#all&campaign=c-55521c2b) |
+| Most active campaign | `Cluster: uname -s -v -n -r -m` · 29,832 sessions | [Dashboard](https://ondrej-cloud.github.io/azure-honeypot/#all&campaign=c-55521c2b) |
 
 <sub>Data through Oct 22, 2026.</sub>
