@@ -1,0 +1,1 @@
+{"v":1,"id":"eff265ce3fe88cc5","session":"9fe78d525847","ip":"103.109.108.53","protocol":"ssh","start":"2026-10-22T08:35:26Z","duration":4.3,"campaign":"c-abe7aac5","truncated":false,"frames":[[0.0,"$ mount | head -5\r\n"],[0.007,"bash: line 1: /usr/bin/mount: cannot execute binary file: Exec format error\n"]]}
