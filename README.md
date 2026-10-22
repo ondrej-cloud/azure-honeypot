@@ -17,8 +17,8 @@
 Refreshed automatically every 6 hours by GitHub Actions.
 
 <!-- STATS:START -->
-> **40,758** connections · **1,601** unique IPs · **37,188** login attempts · **130,426** commands · **97** countries
-> <sub>Since 2026-10-14 · updated 2026-10-21 21:45:22 UTC · sensor `azure-denmarkeast`</sub>
+> **42,911** connections · **1,765** unique IPs · **39,221** login attempts · **133,463** commands · **101** countries
+> <sub>Since 2026-10-14 · updated 2026-10-22 04:55:47 UTC · sensor `azure-denmarkeast`</sub>
 
 <img src="docs/charts/activity.svg" alt="Connections per day, last 30 days" width="100%">
 
@@ -29,25 +29,25 @@ Refreshed automatically every 6 hours by GitHub Actions.
 
 | Most common commands | Runs |
 |---|---:|
-| `uname -s -v -n -r -m` | 24,289 |
-| `system` | 7,189 |
-| `shell` | 7,170 |
-| `sh` | 7,158 |
-| `enable` | 6,957 |
-| `linuxshell` | 5,090 |
-| `/bin/busybox` | 3,583 |
-| `/bin/busybox HISILICON` | 2,624 |
+| `uname -s -v -n -r -m` | 26,001 |
+| `system` | 7,270 |
+| `shell` | 7,251 |
+| `sh` | 7,239 |
+| `enable` | 7,038 |
+| `linuxshell` | 5,094 |
+| `/bin/busybox` | 3,586 |
+| `/bin/busybox HISILICON` | 2,738 |
 
 | MITRE ATT&CK technique | Tactic | Sessions |
 |---|---|---:|
-| [T1110.001](https://attack.mitre.org/techniques/T1110/001/) Brute Force: Password Guessing | Credential Access | 36,945 |
-| [T1082](https://attack.mitre.org/techniques/T1082/) System Information Discovery | Discovery | 25,724 |
-| [T1059.004](https://attack.mitre.org/techniques/T1059/004/) Command and Scripting Interpreter: Unix Shell | Execution | 7,915 |
-| [T1222.002](https://attack.mitre.org/techniques/T1222/002/) File and Directory Permissions Modification | Defense Evasion | 1,675 |
-| [T1070.004](https://attack.mitre.org/techniques/T1070/004/) Indicator Removal: File Deletion | Defense Evasion | 919 |
-| [T1105](https://attack.mitre.org/techniques/T1105/) Ingress Tool Transfer | Command and Control | 144 |
-| [T1098.004](https://attack.mitre.org/techniques/T1098/004/) Account Manipulation: SSH Authorized Keys | Persistence | 37 |
-| [T1033](https://attack.mitre.org/techniques/T1033/) System Owner/User Discovery | Discovery | 32 |
+| [T1110.001](https://attack.mitre.org/techniques/T1110/001/) Brute Force: Password Guessing | Credential Access | 38,977 |
+| [T1082](https://attack.mitre.org/techniques/T1082/) System Information Discovery | Discovery | 27,456 |
+| [T1059.004](https://attack.mitre.org/techniques/T1059/004/) Command and Scripting Interpreter: Unix Shell | Execution | 8,018 |
+| [T1222.002](https://attack.mitre.org/techniques/T1222/002/) File and Directory Permissions Modification | Defense Evasion | 1,761 |
+| [T1070.004](https://attack.mitre.org/techniques/T1070/004/) Indicator Removal: File Deletion | Defense Evasion | 967 |
+| [T1105](https://attack.mitre.org/techniques/T1105/) Ingress Tool Transfer | Command and Control | 148 |
+| [T1098.004](https://attack.mitre.org/techniques/T1098/004/) Account Manipulation: SSH Authorized Keys | Persistence | 63 |
+| [T1033](https://attack.mitre.org/techniques/T1033/) System Owner/User Discovery | Discovery | 33 |
 <!-- STATS:END -->
 
 ## Findings
