@@ -1,1 +1,0 @@
-{"v":1,"id":"654a82c3cbc7aa1d","session":"e0f2a2c93800","ip":"116.98.50.179","protocol":"ssh","start":"2026-10-16T11:00:48Z","duration":3.1,"campaign":"c-26b993b3","truncated":false,"frames":[[0.0,"$ cd /tmp && chmod +x WkFaPFdo && bash -c ./WkFaPFdo\r\n"],[0.012,"chmod: cannot access 'WkFaPFdo': No such file or directory\n"]]}
