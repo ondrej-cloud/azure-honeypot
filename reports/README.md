@@ -4,7 +4,7 @@ Written automatically by the pipeline from the honeypot's daily summaries. [Live
 
 | Week | Dates | Connections | Unique IPs | Login attempts | Commands | New samples | Top campaign |
 |---|---|---:|---:|---:|---:|---:|---|
-| [2026-W43](2026-W43.md) _(in progress)_ | Oct 19 – Oct 25, 2026 | 32,587 | 2,598 | 29,383 | 141,417 | 58 | `Cluster: uname -s -v -n -r -m` |
+| [2026-W43](2026-W43.md) _(in progress)_ | Oct 19 – Oct 25, 2026 | 33,045 | 2,655 | 29,778 | 148,141 | 62 | `Cluster: uname -s -v -n -r -m` |
 | [2026-W42](2026-W42.md) | Oct 12 – Oct 18, 2026 | 28,984 | 877 | 26,582 | 57,198 | 47 | `Cluster: uname -s -v -n -r -m` |
 
 ## All-time records
