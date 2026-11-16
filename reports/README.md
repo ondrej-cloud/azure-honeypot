@@ -4,7 +4,7 @@ Written automatically by the pipeline from the honeypot's daily summaries. [Live
 
 | Week | Dates | Connections | Unique IPs | Login attempts | Commands | New samples | Top campaign |
 |---|---|---:|---:|---:|---:|---:|---|
-| [2026-W47](2026-W47.md) _(in progress)_ | Nov 16 – Nov 22, 2026 | 532 | 112 | 434 | 3,408 | 0 | `Mirai-style loader (HISILICON)` |
+| [2026-W47](2026-W47.md) _(in progress)_ | Nov 16 – Nov 22, 2026 | 25,748 | 343 | 25,286 | 33,120 | 1 | `Cluster: echo -e "\x6F\x6B"` |
 | [2026-W46](2026-W46.md) | Nov 9 – Nov 15, 2026 | 40,314 | 1,881 | 37,466 | 105,737 | 13 | `Cluster: uname -s -v -n -r -m` |
 | [2026-W45](2026-W45.md) | Nov 2 – Nov 8, 2026 | 42,435 | 2,284 | 39,134 | 78,816 | 35 | `Cluster: uname -s -v -n -r -m` |
 | [2026-W44](2026-W44.md) | Oct 26 – Nov 1, 2026 | 37,721 | 2,886 | 34,447 | 169,493 | 59 | `Cluster: uname -s -v -n -r -m` |
@@ -18,8 +18,8 @@ Written automatically by the pipeline from the honeypot's daily summaries. [Live
 | Longest session | 6 min 58 s (ssh) · Nov 11 | [164.30.7.153](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=164.30.7.153) · [Replay](https://ondrej-cloud.github.io/azure-honeypot/#all&replay=b55d713e4cae43f9) |
 | Most commands in one session | 8,907 · Nov 9 | [134.209.108.59](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=134.209.108.59) · [Replay](https://ondrej-cloud.github.io/azure-honeypot/#all&replay=b20139835bb40b1a) |
 | Longest password | `B9ujcb3uFD3s7cHbtzlFUDXUkRZNF91mq58MGQzO1hS9enWybVKfaCanrYl…` (341 characters) | [2.57.122.207](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=2.57.122.207) |
-| Most login attempts from one IP | 4,942 | [109.160.32.108](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=109.160.32.108) |
+| Most login attempts from one IP | 18,417 | [109.198.192.130](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=109.198.192.130) |
 | Most persistent IP | active on 33 days | [77.239.124.130](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=77.239.124.130) |
-| Most active campaign | `Cluster: uname -s -v -n -r -m` · 117,470 sessions | [Dashboard](https://ondrej-cloud.github.io/azure-honeypot/#all&campaign=c-55521c2b) |
+| Most active campaign | `Cluster: uname -s -v -n -r -m` · 122,844 sessions | [Dashboard](https://ondrej-cloud.github.io/azure-honeypot/#all&campaign=c-55521c2b) |
 
 <sub>Data through Nov 16, 2026.</sub>
