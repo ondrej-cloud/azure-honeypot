@@ -1,0 +1,1 @@
+{"v":1,"id":"d17feeb96a582513","session":"defdf86d1976","ip":"182.8.161.160","protocol":"ssh","start":"2026-10-24T11:16:38Z","duration":2.3,"campaign":"c-9ecfd540","truncated":false,"frames":[[0.0,"$ cd /tmp && chmod +x M6Gx9qp0 && bash -c ./M6Gx9qp0\r\n"],[0.012,"chmod: cannot access 'M6Gx9qp0': No such file or directory\n"]]}
