@@ -4,7 +4,7 @@ Written automatically by the pipeline from the honeypot's daily summaries. [Live
 
 | Week | Dates | Connections | Unique IPs | Login attempts | Commands | New samples | Top campaign |
 |---|---|---:|---:|---:|---:|---:|---|
-| [2026-W47](2026-W47.md) _(in progress)_ | Nov 16 – Nov 22, 2026 | 47,110 | 1,433 | 45,091 | 78,303 | 21 | `Cluster: uname -s -v -n -r -m` |
+| [2026-W47](2026-W47.md) _(in progress)_ | Nov 16 – Nov 22, 2026 | 50,779 | 1,519 | 48,578 | 83,328 | 22 | `Cluster: uname -s -v -n -r -m` |
 | [2026-W46](2026-W46.md) | Nov 9 – Nov 15, 2026 | 40,314 | 1,881 | 37,466 | 105,737 | 13 | `Cluster: uname -s -v -n -r -m` |
 | [2026-W45](2026-W45.md) | Nov 2 – Nov 8, 2026 | 42,435 | 2,284 | 39,134 | 78,816 | 35 | `Cluster: uname -s -v -n -r -m` |
 | [2026-W44](2026-W44.md) | Oct 26 – Nov 1, 2026 | 37,721 | 2,886 | 34,447 | 169,493 | 59 | `Cluster: uname -s -v -n -r -m` |
@@ -19,7 +19,7 @@ Written automatically by the pipeline from the honeypot's daily summaries. [Live
 | Most commands in one session | 8,907 · Nov 9 | [134.209.108.59](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=134.209.108.59) · [Replay](https://ondrej-cloud.github.io/azure-honeypot/#all&replay=b20139835bb40b1a) |
 | Longest password | `B9ujcb3uFD3s7cHbtzlFUDXUkRZNF91mq58MGQzO1hS9enWybVKfaCanrYl…` (341 characters) | [2.57.122.207](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=2.57.122.207) |
 | Most login attempts from one IP | 18,417 | [109.198.192.130](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=109.198.192.130) |
-| Most persistent IP | active on 37 days | [77.239.124.130](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=77.239.124.130) |
-| Most active campaign | `Cluster: uname -s -v -n -r -m` · 137,010 sessions | [Dashboard](https://ondrej-cloud.github.io/azure-honeypot/#all&campaign=c-55521c2b) |
+| Most persistent IP | active on 38 days | [77.239.124.130](https://ondrej-cloud.github.io/azure-honeypot/#all&ip=77.239.124.130) |
+| Most active campaign | `Cluster: uname -s -v -n -r -m` · 139,909 sessions | [Dashboard](https://ondrej-cloud.github.io/azure-honeypot/#all&campaign=c-55521c2b) |
 
-<sub>Data through Nov 20, 2026.</sub>
+<sub>Data through Nov 21, 2026.</sub>
