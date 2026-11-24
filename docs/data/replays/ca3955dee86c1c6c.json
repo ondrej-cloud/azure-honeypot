@@ -1,1 +1,0 @@
-{"v":1,"id":"ca3955dee86c1c6c","session":"9b1d928d6aae","ip":"187.131.19.60","protocol":"ssh","start":"2026-11-24T00:13:48Z","duration":1.7,"campaign":"c-9adf88c9","truncated":false,"frames":[[0.0,"$ cd /tmp && chmod +x B2MphpKA && bash -c ./B2MphpKA\r\n"],[0.012,"chmod: cannot access 'B2MphpKA': No such file or directory\n"]]}
